@@ -9,9 +9,11 @@ set_languages("cxx20")
 add_rules("mode.debug", "mode.release")
 
 add_repositories("repo repo")
+add_requires("protocon main")
 
 target("simple-device")
     set_kind("binary")
     add_files("src/*.cpp")
+    add_packages("protocon")
 
 includes("benches")
