@@ -1,0 +1,26 @@
+name: C++ CI with xmake
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: "2.6.1"
+      - name: Build
+        shell: bash
+        run: xmake -ay
+      - name: Test
+        shell: bash
+        run: xmake r Tests
+      - name: Benches
+        shell: bash
+        run: xmake r Benches
