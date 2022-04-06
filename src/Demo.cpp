@@ -1,4 +1,3 @@
-#include <Demo/Demo.h>
 
 namespace Demo {
 
