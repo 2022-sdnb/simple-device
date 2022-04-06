@@ -1,8 +1,6 @@
+#include <cstdio>
 
-namespace Demo {
-
-const char* HelloWorld() {
-    return "Hello world!";
+int main() {
+    std::printf("Hello world.\n");
+    return 0;
 }
-
-}  // namespace Demo
