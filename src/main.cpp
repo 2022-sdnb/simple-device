@@ -69,21 +69,57 @@ int main() {
                 },
             [](const Protocon::Response& r) {});
 
+    uint64_t prev_time = time(nullptr);
+    uint64_t charger_timer = 0;
+
     while (gw.isOpen()) {
         gw.poll();
 
+        uint64_t curr = time(nullptr);
+        charger_timer += curr - prev_time;
+        prev_time = curr;
+
         if (trigger) {
+            // 负控运行数据
             gw.send(tk, Protocon::Request{
                             static_cast<uint64_t>(time(nullptr)),
-                            0x0004,
-                            "{\"msg\": \"Hello world!\"}",
+                            0x2001,
+                            "{}",
                         },
                     [](const Protocon::Response& r) {});
+
+            // 充电桩运行数据
+            gw.send(tk, Protocon::Request{
+                            static_cast<uint64_t>(time(nullptr)),
+                            0x2002,
+                            "{}",
+                        },
+                    [](const Protocon::Response& r) {});
+
+            // 中央空调运行数据
+            gw.send(tk, Protocon::Request{
+                            static_cast<uint64_t>(time(nullptr)),
+                            0x2003,
+                            "{}",
+                        },
+                    [](const Protocon::Response& r) {});
+
+            // 每个十秒上传一次
+            if (charger_timer >= 8) {
+                charger_timer -= 8;
+                // 充电桩交易数据
+                gw.send(tk, Protocon::Request{
+                                static_cast<uint64_t>(time(nullptr)),
+                                0x2004,
+                                "{}",
+                            },
+                        [](const Protocon::Response& r) {});
+            }
 
             spdlog::info("上报数据");
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
     return 0;
