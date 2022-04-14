@@ -37,6 +37,38 @@ int main() {
 
     spdlog::info("连接服务器成功");
 
+    // 负控静态数据
+    gw.send(tk, Protocon::Request{
+                    static_cast<uint64_t>(time(nullptr)),
+                    0x1001,
+                    "{}",
+                },
+            [](const Protocon::Response& r) {});
+
+    // 充电桩静态数据
+    gw.send(tk, Protocon::Request{
+                    static_cast<uint64_t>(time(nullptr)),
+                    0x1002,
+                    "{}",
+                },
+            [](const Protocon::Response& r) {});
+
+    // 空调静态数据
+    gw.send(tk, Protocon::Request{
+                    static_cast<uint64_t>(time(nullptr)),
+                    0x1003,
+                    "{}",
+                },
+            [](const Protocon::Response& r) {});
+
+    // 网关静态数据
+    gw.send(tk, Protocon::Request{
+                    static_cast<uint64_t>(time(nullptr)),
+                    0x1004,
+                    "{}",
+                },
+            [](const Protocon::Response& r) {});
+
     while (gw.isOpen()) {
         gw.poll();
 
