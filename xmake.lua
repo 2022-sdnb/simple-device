@@ -9,6 +9,7 @@ set_languages("cxx20")
 add_rules("mode.debug", "mode.release")
 
 add_requires("spdlog v1.9.2")
+add_requires("nlohmann_json v3.10.5")
 
 add_repositories("repo repo")
 add_requires("protocon main")
@@ -18,6 +19,7 @@ target("simple-device")
     add_files("src/*.cpp")
     add_ldflags("-pthread")
     add_packages("spdlog")
+    add_packages("nlohmann_json")
     add_packages("protocon")
 
 includes("benches")
