@@ -1,3 +1,4 @@
+#include <Protocon/ClientToken.h>
 #include <Protocon/Protocon.h>
 #include <Protocon/Request.h>
 #include <Protocon/Response.h>
@@ -15,6 +16,18 @@ int main() {
                   .withSignInResponseHandler([&trigger](const Protocon::SignInResponse& r) {
                       if (!r.status)
                           trigger = true;
+                  })
+                  .withRequestHandler(0x3001, [](Protocon::ClientToken tk, const Protocon::Request& r) {
+                      spdlog::info("接收到负控设备运行控制命令，data: {}", r.data);
+                      return Protocon::Response{.time = static_cast<uint64_t>(std::time(nullptr)), .status = 0, .data = "{}"};
+                  })
+                  .withRequestHandler(0x3002, [](Protocon::ClientToken tk, const Protocon::Request& r) {
+                      spdlog::info("接收到充电桩设备运行控制命令，data: {}", r.data);
+                      return Protocon::Response{.time = static_cast<uint64_t>(std::time(nullptr)), .status = 0, .data = "{}"};
+                  })
+                  .withRequestHandler(0x3003, [](Protocon::ClientToken tk, const Protocon::Request& r) {
+                      spdlog::info("接收到空调设备运行控制命令，data: {}", r.data);
+                      return Protocon::Response{.time = static_cast<uint64_t>(std::time(nullptr)), .status = 0, .data = "{}"};
                   })
                   .build();
 
