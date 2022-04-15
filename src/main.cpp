@@ -118,7 +118,13 @@ int main() {
         gw.send(tk, Protocon::Request{
                         static_cast<uint64_t>(time(nullptr)),
                         0x2002,
-                        "{}",
+                        nlohmann::json{
+                            {"ua", std::rand()},
+                            {"ub", std::rand()},
+                            {"uc", std::rand()},
+                            {"uo", std::rand()},
+                        }
+                            .dump(),
                     },
                 [](const Protocon::Response& r) {});
 
@@ -126,18 +132,26 @@ int main() {
         gw.send(tk, Protocon::Request{
                         static_cast<uint64_t>(time(nullptr)),
                         0x2003,
-                        "{}",
+                        nlohmann::json{
+                            {"ch_in_t", std::rand()},
+                            {"ch_out_t", std::rand()},
+                        }
+                            .dump(),
                     },
                 [](const Protocon::Response& r) {});
 
         // 每个十秒上传一次
-        if (charger_timer >= 8) {
-            charger_timer -= 8;
+        if (charger_timer >= 16) {
+            charger_timer -= 16;
             // 充电桩交易数据
             gw.send(tk, Protocon::Request{
                             static_cast<uint64_t>(time(nullptr)),
                             0x2004,
-                            "{}",
+                            nlohmann::json{
+                                {"PWatt_1", std::rand()},
+                                {"Income_1", std::rand()},
+                            }
+                                .dump(),
                         },
                     [](const Protocon::Response& r) {});
         }
