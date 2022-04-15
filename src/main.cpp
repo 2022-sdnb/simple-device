@@ -5,6 +5,7 @@
 #include <Protocon/SignInResponse.h>
 #include <spdlog/spdlog.h>
 
+#include <chrono>
 #include <cstdio>
 #include <ctime>
 #include <thread>
@@ -36,6 +37,8 @@ int main() {
     if (!gw.run("127.0.0.1", 8082)) return 1;
 
     spdlog::info("连接服务器成功");
+
+    std::this_thread::sleep_for(std::chrono::seconds(5));
 
     // 负控静态数据
     gw.send(tk, Protocon::Request{
