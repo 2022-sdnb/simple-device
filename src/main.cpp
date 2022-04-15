@@ -42,7 +42,10 @@ int main() {
 
     spdlog::info("连接服务器成功");
 
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    // 确保登录成功
+    while (!trigger) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 
     // 负控静态数据
     gw.send(tk, Protocon::Request{
@@ -90,49 +93,47 @@ int main() {
         charger_timer += curr - prev_time;
         prev_time = curr;
 
-        if (trigger) {
-            // 负控运行数据
-            gw.send(tk, Protocon::Request{
-                            static_cast<uint64_t>(time(nullptr)),
-                            0x2001,
-                            nlohmann::json{
-                                {"p_rt", std::rand()},
-                                {"q_rt", std::rand()},
-                            }
-                                .dump(),
-                        },
-                    [](const Protocon::Response& r) {});
+        // 负控运行数据
+        gw.send(tk, Protocon::Request{
+                        static_cast<uint64_t>(time(nullptr)),
+                        0x2001,
+                        nlohmann::json{
+                            {"p_rt", std::rand()},
+                            {"q_rt", std::rand()},
+                        }
+                            .dump(),
+                    },
+                [](const Protocon::Response& r) {});
 
-            // 充电桩运行数据
+        // 充电桩运行数据
+        gw.send(tk, Protocon::Request{
+                        static_cast<uint64_t>(time(nullptr)),
+                        0x2002,
+                        "{}",
+                    },
+                [](const Protocon::Response& r) {});
+
+        // 中央空调运行数据
+        gw.send(tk, Protocon::Request{
+                        static_cast<uint64_t>(time(nullptr)),
+                        0x2003,
+                        "{}",
+                    },
+                [](const Protocon::Response& r) {});
+
+        // 每个十秒上传一次
+        if (charger_timer >= 8) {
+            charger_timer -= 8;
+            // 充电桩交易数据
             gw.send(tk, Protocon::Request{
                             static_cast<uint64_t>(time(nullptr)),
-                            0x2002,
+                            0x2004,
                             "{}",
                         },
                     [](const Protocon::Response& r) {});
-
-            // 中央空调运行数据
-            gw.send(tk, Protocon::Request{
-                            static_cast<uint64_t>(time(nullptr)),
-                            0x2003,
-                            "{}",
-                        },
-                    [](const Protocon::Response& r) {});
-
-            // 每个十秒上传一次
-            if (charger_timer >= 8) {
-                charger_timer -= 8;
-                // 充电桩交易数据
-                gw.send(tk, Protocon::Request{
-                                static_cast<uint64_t>(time(nullptr)),
-                                0x2004,
-                                "{}",
-                            },
-                        [](const Protocon::Response& r) {});
-            }
-
-            spdlog::info("上报数据");
         }
+
+        spdlog::info("上报数据");
 
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     }
