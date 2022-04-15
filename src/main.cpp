@@ -7,10 +7,14 @@
 
 #include <chrono>
 #include <cstdio>
+#include <cstdlib>
 #include <ctime>
+#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 #include <thread>
 
 int main() {
+    std::srand(time(nullptr));
     bool trigger = false;
 
     auto gw = Protocon::GatewayBuilder(2)
@@ -44,7 +48,11 @@ int main() {
     gw.send(tk, Protocon::Request{
                     static_cast<uint64_t>(time(nullptr)),
                     0x1001,
-                    "{}",
+                    nlohmann::json{
+                        {"kgType", "kg"},
+                        {"phase_cnt", 1},
+                    }
+                        .dump(),
                 },
             [](const Protocon::Response& r) {});
 
@@ -87,7 +95,11 @@ int main() {
             gw.send(tk, Protocon::Request{
                             static_cast<uint64_t>(time(nullptr)),
                             0x2001,
-                            "{}",
+                            nlohmann::json{
+                                {"p_rt", std::rand()},
+                                {"q_rt", std::rand()},
+                            }
+                                .dump(),
                         },
                     [](const Protocon::Response& r) {});
 
@@ -122,7 +134,7 @@ int main() {
             spdlog::info("上报数据");
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     }
 
     return 0;
