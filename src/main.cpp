@@ -64,7 +64,11 @@ int main() {
     gw.send(tk, Protocon::Request{
                     static_cast<uint64_t>(time(nullptr)),
                     0x1002,
-                    "{}",
+                    nlohmann::json{
+                        {"zd_fcode", 2},
+                        {"cd_fcode", 5},
+                    }
+                        .dump(),
                 },
             [](const Protocon::Response& r) {});
 
@@ -80,7 +84,11 @@ int main() {
     gw.send(tk, Protocon::Request{
                     static_cast<uint64_t>(time(nullptr)),
                     0x1004,
-                    "{}",
+                    nlohmann::json{
+                        {"cap_cool", 525.6},
+                        {"cap_heat", 85.7},
+                    }
+                        .dump(),
                 },
             [](const Protocon::Response& r) {});
 
