@@ -141,8 +141,8 @@ int main() {
                 [](const Protocon::Response& r) {});
 
         // 每个十秒上传一次
-        if (charger_timer >= 16) {
-            charger_timer -= 16;
+        if (charger_timer >= 10) {
+            charger_timer -= 10;
             // 充电桩交易数据
             gw.send(tk, Protocon::Request{
                             static_cast<uint64_t>(time(nullptr)),
@@ -158,7 +158,7 @@ int main() {
 
         spdlog::info("上报数据");
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(3000));
     }
 
     return 0;
