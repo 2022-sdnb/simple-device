@@ -53,7 +53,7 @@ int main() {
                     static_cast<uint64_t>(time(nullptr)),
                     0x1001,
                     nlohmann::json{
-                        {"kg_type", "kg"},
+                        {"kg_type", "defalt_kg"},
                         {"phase_cnt", 1},
                     }
                         .dump(),
