@@ -102,6 +102,14 @@ int main() {
         charger_timer += curr - prev_time;
         prev_time = curr;
 
+        // 心跳
+        gw.send(tk, Protocon::Request{
+                        static_cast<uint64_t>(time(nullptr)),
+                        0x0004,
+                        nlohmann::json{{"msg", "heartbeat"}}.dump(),
+                    },
+                [](const Protocon::Response& r) {});
+
         // 负控运行数据
         gw.send(tk, Protocon::Request{
                         static_cast<uint64_t>(time(nullptr)),
