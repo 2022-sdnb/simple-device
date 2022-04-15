@@ -9,7 +9,7 @@ set_languages("cxx20")
 add_rules("mode.debug", "mode.release")
 
 add_requires("spdlog v1.9.2")
-add_requires("nlohmann_json v3.10.5")
+add_requires("nlohmann_json v3.10.0")
 
 add_repositories("repo repo")
 add_requires("protocon main")
