@@ -44,6 +44,7 @@ int main() {
 
     // 确保登录成功
     while (!trigger) {
+        gw.poll();
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
